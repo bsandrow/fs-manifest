@@ -39,7 +39,6 @@ def main():
         raise OSError("File already exists: %s" % options.file)
 
     for dirpath, dirs, files in os.walk(options.directory):
-        print "Processing directory: %s" % dirpath
         manifest += map_fullpath(process_file, dirpath, files)
 
     with open(options.file, 'wb+') as fh:
