@@ -8,7 +8,6 @@ except ImportError:
     print("Falling back to distutils. Functionality may be limited.")
     from distutils.core import setup
 
-requires = []
 long_description = open('README.rst').read() + "\n\n" + open("ChangeLog").read()
 
 config = {
@@ -19,10 +18,7 @@ config = {
     'author_email'    : 'brandon@sandrowicz.org',
     'url'             : 'https://github.com/bsandrow/fs-manifest',
     'version'         : '0.1',
-    'packages'        : ['fs_manifest'],
-    'package_data'    : { '': ['LICENSE'] },
     'scripts'         : glob('bin/*'),
-    'install_requires': requires,
     'license'         : open('LICENSE').read(),
 }
 

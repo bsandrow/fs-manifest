@@ -1,11 +1,53 @@
 #!/usr/bin/env python
 
+import argparse
+import hashlib
+import json
+import os
 import sys
-import fs_manifest
+
+from itertools import imap
+
+def get_options():
+    parser = argparse.ArgumentParser("Generate a filesystem listing")
+    parser.add_argument('directory', help='Top directory to traverse.')
+    parser.add_argument('-f', '--file', help='Manifest file to generate', default='manifest.json')
+
+    options = parser.parse_args()
+    return options
+
+def map_fullpath(func, dirpath, items):
+    return map(func, imap(lambda x: os.path.join(dirpath, x), items))
+
+def sha1sum(file, buffer=2048):
+    m = hashlib.sha1()
+    with open(file) as fh:
+        d = fh.read(buffer)
+        while (d):
+            m.update(d)
+            d = fh.read(buffer)
+    return m.hexdigest()
+
+def process_file(file):
+    return (file, sha1sum(file))
+
+def main():
+    options = get_options()
+    manifest = []
+
+    if os.path.exists(options.file):
+        raise OSError("File already exists: %s" % options.file)
+
+    for dirpath, dirs, files in os.walk(options.directory):
+        print "Processing directory: %s" % dirpath
+        manifest += map_fullpath(process_file, dirpath, files)
+
+    with open(options.file, 'wb+') as fh:
+        fh.write(json.dumps(manifest))
 
 if __name__ == '__main__':
     try:
-        fs_manifest.main()
+        main()
     except KeyboardInterrupt:
         sys.exit(">> Caught user interrupt. Exiting...")
     except OSError as e:
