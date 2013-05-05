@@ -1,7 +1,5 @@
 from __future__ import print_function
 
-from glob import glob
-
 try:
     from setuptools import setup
 except ImportError:
@@ -18,7 +16,7 @@ config = {
     'author_email'    : 'brandon@sandrowicz.org',
     'url'             : 'https://github.com/bsandrow/fs-manifest',
     'version'         : '0.1',
-    'scripts'         : glob('bin/*'),
+    'scripts'         : 'fs-manifest',
     'license'         : open('LICENSE').read(),
 }
 
