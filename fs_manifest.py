@@ -10,6 +10,7 @@ from itertools import imap
 def get_options():
     parser = argparse.ArgumentParser("Generate a filesystem listing")
     parser.add_argument('directory', help='Top directory to traverse.')
+    parser.add_argument('-f', '--file', help='Manifest file to generate', default='manifest.json')
 
     options = parser.parse_args()
     return options
@@ -33,11 +34,14 @@ def main():
     options = get_options()
     manifest = []
 
+    if os.path.exists(options.file):
+        raise OSError("File already exists: %s" % options.file)
+
     for dirpath, dirs, files in os.walk(options.directory):
         print "Processing directory: %s" % dirpath
         manifest += map_fullpath(process_file, dirpath, files)
 
-    with open('data.json', 'wb+') as fh:
+    with open(options.file, 'wb+') as fh:
         fh.write(json.dumps(manifest))
 
 if __name__ == '__main__':
